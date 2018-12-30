@@ -20,3 +20,7 @@ export default [
     codes: [32],
   },
 ];
+
+export const failedMessages = ["Turns out you're not as bright as you think", 'Cheee, another one bites the dust'];
+
+export const highscoreMessages = ['Finally!. Someone with guts!!'];

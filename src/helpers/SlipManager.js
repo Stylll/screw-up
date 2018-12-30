@@ -1,4 +1,4 @@
-import Slips from './store';
+import Slips, { failedMessages, highscoreMessages } from './store';
 
 export default class SlipManager {
   static getRandomSlip = () => {
@@ -7,5 +7,19 @@ export default class SlipManager {
     randomNumber *= Slips.length;
     randomNumber = Math.floor(randomNumber);
     return Slips[randomNumber];
+  }
+
+  static getRandomFailedMessage = () => {
+    let randomNumber = Math.random();
+    randomNumber *= failedMessages.length;
+    randomNumber = Math.floor(randomNumber);
+    return failedMessages[randomNumber];
+  }
+
+  static getRandomHighscoreMessage = () => {
+    let randomNumber = Math.random();
+    randomNumber *= highscoreMessages.length;
+    randomNumber = Math.floor(randomNumber);
+    return highscoreMessages[randomNumber];
   }
 }
