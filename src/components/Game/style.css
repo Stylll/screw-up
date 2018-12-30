@@ -1,0 +1,15 @@
+.content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.static-bar {
+  height: 2px;
+  width: 100%;
+  background-color: #C4C4C4;
+}
+.moving-bar {
+  height: 2px;
+  background-color: #5EA853;
+}
