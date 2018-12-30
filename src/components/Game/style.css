@@ -13,3 +13,28 @@
   height: 2px;
   background-color: #5EA853;
 }
+.modal {
+  display: block;
+  max-height: 100%;
+}
+.try_again_button {
+  width: 150px;
+  margin-top: 10px;
+  background-color: #5EA853;
+  height: 40px;
+  border: none;
+}
+.try_again_button:hover{
+  cursor: pointer;
+}
+.try_again_text {
+  font-size: 15px;
+  font-weight: 900;
+  color: #fff;
+}
+.title {
+  font-family: 'Rammetto One', cursive, 'Roboto';
+}
+.input_text {
+  width: 50%;
+}
