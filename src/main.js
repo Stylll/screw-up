@@ -4,6 +4,7 @@ import Vue from 'vue';
 import App from './App';
 import router from './router';
 import store from './store';
+import { highscoreRef } from './helpers/Firebase';
 
 Vue.config.productionTip = false;
 
@@ -14,4 +15,10 @@ new Vue({
   router,
   components: { App },
   template: '<App/>',
+});
+
+// listener to update the store when highscore is updated on firebase
+highscoreRef.on('value', (snapshot) => {
+  const highscore = snapshot.val();
+  store.commit('setHighscore', highscore);
 });
