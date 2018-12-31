@@ -22,6 +22,13 @@
     <h5>Loading game...</h5>
     <span>Please wait</span>
   </div>
+  <div v-if="loadingError" class="content">
+    <h5 class="red-text">{{loadingError}}</h5>
+    <br />
+    <router-link to="/" class="waves-effect waves-light btn red darken-4">
+      <span>Go to homepage</span>
+    </router-link>
+  </div>
   <div v-if="displayFailedModal || displayHighscoreModal" id="modal1" class="modal content">
     <div v-if="displayFailedModal" class="modal-content">
       <h4>Missed!</h4>
@@ -66,6 +73,7 @@
 import { setInterval, clearInterval } from 'timers';
 import SlipManager from '../../helpers/SlipManager';
 import generateTimerSpeed from '../../helpers/generateTimerSpeed';
+import { saveHighscore, highscoreRef } from '../../helpers/Firebase';
 
 const Game = {
   name: 'Game',
@@ -86,9 +94,9 @@ const Game = {
       displayFailedModal: false,
       displayHighscoreModal: false,
       highscoreSaved: false,
-      highscore: {},
       username: '',
       saveError: '',
+      loadingError: '',
     };
   },
   methods: {
@@ -135,9 +143,17 @@ const Game = {
       }
     },
     prepareGame() {
-      // fetch highscore from online store
-      this.highscore = this.$store.state.highscore;
-      this.startNewGame();
+      this.isLoading = true;
+      highscoreRef.once('value').then((snapshot) => {
+        const highscore = snapshot.val();
+        this.$store.commit('setHighscore', highscore);
+        this.isLoading = false;
+        this.loadingError = '';
+        this.startNewGame();
+      }).catch(() => {
+        this.isLoading = false;
+        this.loadingError = 'An error occurred when loading the game. Try again.';
+      });
     },
     startNewGame() {
       this.displayFailedModal = false;
@@ -145,6 +161,7 @@ const Game = {
       this.isLoading = true;
       this.score = 0;
       this.highscoreSaved = false;
+      this.username = '';
       this.getSlip();
       this.startTimer();
     },
@@ -160,7 +177,7 @@ const Game = {
       this.displayResult();
     },
     displayResult() {
-      if (this.score > this.highscore.score) {
+      if (this.score > this.$store.state.highscore.score) {
         this.displayHighscoreModal = true;
         return;
       }
@@ -176,9 +193,14 @@ const Game = {
         username: this.username,
         score: this.score,
       };
-      this.highscore = highscore;
-      this.$store.commit('setHighscore', highscore);
-      this.highscoreSaved = true;
+      saveHighscore(highscore).then(() => {
+        this.highscore = highscore;
+        // this.$store.commit('setHighscore', highscore);
+        this.highscoreSaved = true;
+        this.saveError = '';
+      }).catch((error) => {
+        this.saveError = 'An error occurred while saving. Try again.';
+      });
     },
     keyListener(event) {
       const key = Game.self.codes.shift();
